@@ -1,17 +1,19 @@
 import arcade
 import arcade.gui
+
 from core.settings import Settings
-
-
-class UIManager(arcade.gui.UIManager):
-    pass
 
 
 class Window(arcade.Window):
     settings = Settings()
 
     def __init__(self) -> None:
-        super().__init__(self.settings.window.width, self.settings.window.height, center_window = True)
+        super().__init__(
+            self.settings.window.width,
+            self.settings.window.height,
+            self.settings.app_name,
+            center_window = True
+        )
 
         background_color = (255, 255, 255, 255)
         arcade.set_background_color(background_color)
