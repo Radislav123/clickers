@@ -1,6 +1,6 @@
 import arcade
 
-from simple.window import Window
+from core.window import Window
 
 
 def start() -> None:

@@ -1,7 +1,7 @@
-import arcade
 import arcade.gui
 
 from core.settings import Settings
+from core.view import MainMenuView
 from logger import Logger
 
 
@@ -9,10 +9,8 @@ class Window(arcade.Window):
     settings = Settings()
     width = 800
     height = 600
-    background_color = (255, 255, 255, 255)
 
     def __init__(self) -> None:
-        self.logger = Logger(str(self.__class__))
         super().__init__(
             self.width,
             self.height,
@@ -20,18 +18,11 @@ class Window(arcade.Window):
             center_window = True
         )
 
-        arcade.set_background_color(self.background_color)
+        self.logger = Logger(str(self.__class__))
+        self.main_menu_view = MainMenuView()
 
     def start(self) -> None:
-        pass
+        self.show_view(self.main_menu_view)
 
     def stop(self) -> None:
         pass
-
-    def on_draw(self) -> None:
-        self.clear()
-
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
-        """Выводит в консоль положение курсора."""
-
-        print(f"x: {x}, y: {y}")
