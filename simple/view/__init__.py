@@ -1,12 +1,9 @@
-from core.window import Window as CoreWindow
+from core.view import View as CoreView
 from simple.settings import Settings
 
 
-class Window(CoreWindow):
+class View(CoreView):
     settings = Settings()
 
     def __init__(self) -> None:
         super().__init__()
-
-    def start(self) -> None:
-        super().start()
