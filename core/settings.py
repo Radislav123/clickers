@@ -11,3 +11,6 @@ class Settings:
         self.LOG_FOLDER = "logs"
         self.CONSOLE_LOG_LEVEL = logging.DEBUG
         self.FILE_LOG_LEVEL = logging.DEBUG
+
+        self.RESOURCES_FOLDER = "resources"
+        self.IMAGES_FOLDER = f"{self.RESOURCES_FOLDER}/images"

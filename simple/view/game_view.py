@@ -1,11 +1,11 @@
-from arcade.gui import UIFlatButton, UIOnClickEvent
+from arcade.gui import UIOnClickEvent
 
-from core.ui.button import FlatButton
+from core.ui.button import TextureButton
 from core.view import GameView as CoreGameView
 from simple.view.view import View
 
 
-class ScoreButton(FlatButton):
+class ScoreButton(TextureButton):
     def __init__(self, view: "GameView", **kwargs) -> None:
         self.view = view
         super().__init__(text = str(self.view.score), **kwargs)
@@ -17,7 +17,7 @@ class ScoreButton(FlatButton):
 
 class GameView(View, CoreGameView):
     score: int
-    score_button: UIFlatButton
+    score_button: ScoreButton
 
     def reset_info(self) -> None:
         self.score = 0

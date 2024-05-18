@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import arcade
 
+from core.service import Color
 from core.settings import Settings
 from core.ui.manager import UIManager
 from logger import Logger
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
 
 class View(arcade.View):
     settings = Settings()
-    background_color = (50, 50, 70, 255)
+    background_color = Color.BACKGROUND
     window: "Window"
 
     def __init__(self) -> None:

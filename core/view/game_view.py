@@ -1,11 +1,11 @@
 from arcade.gui import UIOnClickEvent
 
 from core.service import Anchor
-from core.ui.button import FlatButton
+from core.ui.button import TextureButton
 from core.view.view import View
 
 
-class ExitButton(FlatButton):
+class ExitButton(TextureButton):
     def __init__(self, view: "GameView", **kwargs) -> None:
         super().__init__(text = "Выход", **kwargs)
 
@@ -17,7 +17,7 @@ class ExitButton(FlatButton):
 
 
 class GameView(View):
-    exit_button: FlatButton
+    exit_button: ExitButton
 
     def on_show_view(self) -> None:
         super().on_show_view()
