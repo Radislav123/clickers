@@ -4,11 +4,12 @@ from core.ui.button import TextureButton
 from core.view.game_view import GameView
 from core.view.menu_view import MenuView
 from simple.view import GameView as SimpleGameView
+from morel_buttons.view import GameView as MoreButtonsGameView
 
 
 class GameButton(TextureButton):
     def __init__(self, view: GameView, **kwargs) -> None:
-        super().__init__(**kwargs)
+        super().__init__(width = 200, height = 50, **kwargs)
         self.view = view
 
     def on_click(self, event: UIOnClickEvent) -> None:
@@ -19,13 +20,13 @@ class MainMenuView(MenuView):
     def __init__(self) -> None:
         super().__init__()
 
-        self.app_views = (SimpleGameView(),)
+        self.app_views = (SimpleGameView(), MoreButtonsGameView())
 
     def construct_app_buttons(self) -> None:
         layout = UIBoxLayout()
 
         for view in self.app_views:
-            button = GameButton(view, text = view.settings.app_name.capitalize())
+            button = GameButton(view, text = view.settings.PRETTY_APP_NAME)
             layout.add(button)
 
         layout.fit_content()

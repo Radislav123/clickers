@@ -2,5 +2,5 @@ from core.settings import Settings as CoreSettings
 
 
 class Settings(CoreSettings):
-    APP_NAME = "simple"
-    APP_INDEX = 1
+    APP_NAME = "more_buttons"
+    APP_INDEX = 2

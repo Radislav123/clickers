@@ -2,7 +2,8 @@ import logging
 
 
 class Settings:
-    app_name = "core"
+    APP_NAME = "core"
+    APP_INDEX = 0
 
     def __init__(self) -> None:
         # Настройки логгера
@@ -14,3 +15,8 @@ class Settings:
 
         self.RESOURCES_FOLDER = "resources"
         self.IMAGES_FOLDER = f"{self.RESOURCES_FOLDER}/images"
+
+    # noinspection PyPep8Naming
+    @property
+    def PRETTY_APP_NAME(self) -> str:
+        return f"{self.APP_NAME.capitalize()} {self.APP_INDEX}"
