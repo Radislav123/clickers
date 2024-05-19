@@ -16,10 +16,10 @@ class TextureButton(UITextureButton, MovableWidgetMixin):
         "texture_disabled": Color.DISABLED
     }
     DEFAULT_STYLE = {
-        "normal": UITextureButton.DEFAULT_STYLE["normal"],
-        "hover": UITextureButton.DEFAULT_STYLE["hover"],
-        "press": UITextureButton.UIStyle(font_color = Color.WHITE),
-        "disabled": UITextureButton.DEFAULT_STYLE["disabled"],
+        "normal": UITextureButton.UIStyle(font_size = 12, font_name = settings.FONTS, font_color = Color.TEXT),
+        "hover": UITextureButton.UIStyle(font_size = 14, font_name = settings.FONTS, font_color = Color.TEXT),
+        "press": UITextureButton.UIStyle(font_size = 14, font_name = settings.FONTS, font_color = Color.TEXT),
+        "disabled": UITextureButton.UIStyle(font_size = 12, font_name = settings.FONTS, font_color = Color.TEXT)
     }
 
     def __init__(

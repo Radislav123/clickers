@@ -2,6 +2,7 @@ import logging
 
 
 class Settings:
+    PROJECT_NAME = "clickers"
     APP_NAME = "core"
     APP_INDEX = 0
 
@@ -13,10 +14,16 @@ class Settings:
         self.CONSOLE_LOG_LEVEL = logging.DEBUG
         self.FILE_LOG_LEVEL = logging.DEBUG
 
+        # Пути ресурсов
         self.RESOURCES_FOLDER = "resources"
         self.IMAGES_FOLDER = f"{self.RESOURCES_FOLDER}/images"
+
+        # Шрифты
+        self.FONTS = ["arial"]
 
     # noinspection PyPep8Naming
     @property
     def PRETTY_APP_NAME(self) -> str:
-        return f"{self.APP_NAME.capitalize()} {self.APP_INDEX}"
+        # noinspection PyTypeChecker
+        name = " ".join(map(str.capitalize, self.APP_NAME.split('_')))
+        return f"{name} {self.APP_INDEX}"

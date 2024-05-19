@@ -6,6 +6,8 @@ class Color(tuple[int, int, int, int]):
     DISABLED = (72, 72, 84, 255)
     BORDER = (20, 20, 20, 255)
 
+    TEXT = (255, 255, 0, 255)
+
     BLACK = (0, 0, 0, 255)
     WHITE = (255, 255, 255, 255)
     RED = (255, 0, 0, 255)

@@ -14,7 +14,7 @@ class Window(arcade.Window):
         super().__init__(
             self.width,
             self.height,
-            self.settings.APP_NAME,
+            self.settings.PROJECT_NAME.capitalize(),
             center_window = True
         )
 
