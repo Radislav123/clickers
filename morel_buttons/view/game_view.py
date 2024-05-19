@@ -1,6 +1,6 @@
 from arcade.gui import UIBoxLayout, UIOnClickEvent
 
-from core.service import Anchor
+from core.service import Anchor, Color
 from core.texture import Texture
 from core.ui.button import TextureButton
 from core.ui.layout import BoxLayout
@@ -10,16 +10,25 @@ from morel_buttons.view.view import View
 
 
 class InfoBox(BoxLayout):
-    auto_increment_label: TextureButton
+    total_score_label: Label
+    auto_increment_label: Label
 
     def __init__(self, view: "GameView", **kwargs) -> None:
         super().__init__(**kwargs)
         self.view = view
         self.visible = False
-        self.gap = 3
+        self.gap = 5
 
     def init(self) -> None:
-        self.auto_increment_label = Label(text = self.view.get_displayed_auto_increment())
+        label_kwargs = {
+            "color": Color.NORMAL,
+            "width": 200,
+            "height": 35
+        }
+        self.total_score_label = Label(text = self.view.displayed_total_score, **label_kwargs)
+        self.add(self.total_score_label)
+
+        self.auto_increment_label = Label(text = self.view.displayed_auto_increment, **label_kwargs)
         self.add(self.auto_increment_label)
 
         self.fit_content()
@@ -45,6 +54,7 @@ class IncrementButton(TextureButton):
 
     def on_click(self, event: UIOnClickEvent) -> None:
         self.view.score += self.increment
+        self.view.total_score += self.increment
 
 
 class AutoIncrementButton(TextureButton):
@@ -59,9 +69,11 @@ class AutoIncrementButton(TextureButton):
 
 class GameView(View, CoreGameView):
     score: float
-    previous_displayed_score: str
+    displayed_score: str
+    total_score: float
+    displayed_total_score: str
     auto_increment: int
-    previous_displayed_auto_increment: str
+    displayed_auto_increment: str
     default_increments = [1, 5, 10, 50]
 
     # время в секундах с начала игры
@@ -72,16 +84,17 @@ class GameView(View, CoreGameView):
 
     def reset_info(self) -> None:
         self.score = 0
-        self.previous_displayed_score = self.get_displayed_score()
+        self.displayed_score = self.get_displayed_score()
+        self.total_score = 0
+        self.displayed_total_score = self.get_displayed_total_score()
         self.auto_increment = 0
-        self.previous_displayed_auto_increment = self.get_displayed_auto_increment()
+        self.displayed_auto_increment = self.get_displayed_auto_increment()
         self.time = 0
 
     def prepare_increment_block(self) -> None:
         self.reset_info()
         label_kwargs = {
             "multiline": True,
-            "width": 100,
             "height": 100
         }
         increment_label = Label(text = "Кнопки активного прироста", **label_kwargs)
@@ -123,21 +136,29 @@ class GameView(View, CoreGameView):
         self.prepare_info_block()
 
     def get_displayed_score(self) -> str:
-        return str(int(self.score))
+        return f"Счет: {int(self.score)}"
+
+    def get_displayed_total_score(self) -> str:
+        return f"Общий счет: {int(self.total_score)}"
 
     def get_displayed_auto_increment(self) -> str:
-        return str(self.auto_increment)
+        return f"Пассивный доход: {self.auto_increment}"
 
     def on_draw(self) -> None:
-        if (score := self.get_displayed_score()) != self.previous_displayed_score:
+        if (score := self.get_displayed_score()) != self.displayed_score:
             self.info_button.text = score
-            self.previous_displayed_score = score
+            self.displayed_score = score
+        if (total_score := self.get_displayed_total_score()) != self.displayed_total_score:
+            self.info_box.total_score_label.text = total_score
+            self.displayed_total_score = total_score
         if (self.info_box.visible and
-                (auto_increment := self.get_displayed_auto_increment()) != self.previous_displayed_auto_increment):
+                (auto_increment := self.get_displayed_auto_increment()) != self.displayed_auto_increment):
             self.info_box.auto_increment_label.text = auto_increment
-            self.previous_displayed_auto_increment = auto_increment
+            self.displayed_auto_increment = auto_increment
         super().on_draw()
 
     def on_update(self, delta_time: float) -> None:
         self.time += delta_time
-        self.score += self.auto_increment * delta_time
+        delta_score = self.auto_increment * delta_time
+        self.score += delta_score
+        self.total_score += delta_score
