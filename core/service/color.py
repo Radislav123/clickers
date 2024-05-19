@@ -14,4 +14,4 @@ class Color(tuple[int, int, int, int]):
     GREEN = (0, 255, 0, 255)
     BLUE = (0, 0, 255, 255)
 
-    TRANSPARENT_WHITE = (255, 255, 255, 255)
+    TRANSPARENT_WHITE = (255, 255, 255, 0)

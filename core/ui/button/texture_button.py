@@ -9,17 +9,20 @@ from core.texture import Texture
 
 class TextureButton(UITextureButton, MovableWidgetMixin):
     settings = Settings()
+
     DEFAULT_COLORS = {
         "texture": Color.NORMAL,
         "texture_hovered": Color.HOVERED,
         "texture_pressed": Color.PRESSED,
         "texture_disabled": Color.DISABLED
     }
+    normal_style = UITextureButton.UIStyle(font_size = 12, font_name = settings.FONTS, font_color = Color.TEXT)
+    hovered_style = UITextureButton.UIStyle(font_size = 14, font_name = settings.FONTS, font_color = Color.TEXT)
     DEFAULT_STYLE = {
-        "normal": UITextureButton.UIStyle(font_size = 12, font_name = settings.FONTS, font_color = Color.TEXT),
-        "hover": UITextureButton.UIStyle(font_size = 14, font_name = settings.FONTS, font_color = Color.TEXT),
-        "press": UITextureButton.UIStyle(font_size = 14, font_name = settings.FONTS, font_color = Color.TEXT),
-        "disabled": UITextureButton.UIStyle(font_size = 12, font_name = settings.FONTS, font_color = Color.TEXT)
+        "normal": normal_style,
+        "hover": hovered_style,
+        "press": hovered_style,
+        "disabled": normal_style
     }
 
     def __init__(
@@ -37,9 +40,11 @@ class TextureButton(UITextureButton, MovableWidgetMixin):
                 kwargs[texture_name] = Texture.create_rounded_rectangle(
                     size,
                     3,
-                    texture_color,
-                    Color.BORDER
+                    color = texture_color,
+                    border_color = Color.BORDER
                 )
+        else:
+            kwargs["texture"] = texture
 
         super().__init__(
             x = x,

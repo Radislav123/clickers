@@ -11,15 +11,15 @@ class MovableWidgetMixin(UIWidget):
     def move_to(self, x: int, y: int, anchor_x: str, anchor_y: str) -> None:
         offset_x = x - self.x
         if anchor_x == Anchor.X.RIGHT:
-            offset_x -= self.width
+            offset_x -= self.width + self.padding[1] + self.padding[3]
         elif anchor_x == Anchor.X.CENTER:
-            offset_x -= self.width / 2
+            offset_x -= self.width / 2 + self.padding[1]
 
         offset_y = y - self.y
         if anchor_y == Anchor.Y.TOP:
-            offset_y -= self.height
+            offset_y -= self.height + self.padding[0] + self.padding[2]
         elif anchor_y == Anchor.Y.CENTER:
-            offset_y -= self.height / 2
+            offset_y -= self.height / 2 + self.padding[0]
 
         self.move(offset_x, offset_y)
 

@@ -29,6 +29,7 @@ class View(arcade.View):
         self.ui_manager.enable()
 
     def on_hide_view(self) -> None:
+        self.ui_manager.clear()
         self.ui_manager.disable()
 
     def on_draw(self) -> None:

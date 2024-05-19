@@ -29,15 +29,22 @@ class Texture(ArcadeTexture):
     @functools.cache
     def create_rounded_rectangle(
             cls,
-            size: tuple[int, int] = (100, 50),
+            size: tuple[int | float, int | float] = (100, 50),
             # в пикселях
             border_thickness: int = 1,
-            color: Color = Color.WHITE,
-            border_color: Color = Color.BLACK
+            rounding_radius: int = None,
+            color: Color = Color.NORMAL,
+            border_color: Color = Color.BORDER
     ) -> Self:
-        real_size = size
+        size = list(size)
+        for dimension in range(len(size)):
+            if isinstance(size[dimension], float):
+                size[dimension] = int(size[dimension]) + (size[dimension] % 1 > 0)
+
+        real_size = tuple(size)
         size = (size[0] * cls.multiplier, size[1] * cls.multiplier)
-        rounding_radius = min(size) // 10
+        if rounding_radius is None:
+            rounding_radius = min(size) // 10
 
         figure = cls.get_figure(RoundedRectangle, rounding_radius, size[0], size[1], size[0] / 2, size[1] / 2)
         image = Image.new("RGBA", size, color)

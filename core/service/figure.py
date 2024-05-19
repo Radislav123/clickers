@@ -63,7 +63,10 @@ class Ellipse(Figure, ClosedMixin):
         return [value + self.center_y, -value + self.center_y]
 
     def belongs_value(self, x: float, y: float) -> float:
-        value = (x - self.center_x)**2 / self.semi_major_axis**2 + (y - self.center_y)**2 / self.semi_minor_axis**2
+        if self.semi_major_axis > 0 and self.semi_minor_axis > 0:
+            value = (x - self.center_x)**2 / self.semi_major_axis**2 + (y - self.center_y)**2 / self.semi_minor_axis**2
+        else:
+            value = 2
         return value
 
 
@@ -75,7 +78,8 @@ class Circle(Ellipse):
             center_y: float = 0,
             resolution: float = 1
     ):
-        super().__init__(radius, radius, center_x, center_y, resolution)
+        self.radius = radius
+        super().__init__(self.radius, self.radius, center_x, center_y, resolution)
 
 
 class Rectangle(Figure, ClosedMixin):

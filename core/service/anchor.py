@@ -8,3 +8,9 @@ class Anchor:
         TOP = "top"
         DOWN = "down"
         CENTER = "center"
+
+    class TEXT:
+        TOP = "top"
+        BOTTOM = "bottom"
+        CENTER = "center"
+        BASELINE = "baseline"
