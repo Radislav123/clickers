@@ -16,7 +16,7 @@ class InfoBox(BoxLayout):
     def __init__(self, view: "GameView", **kwargs) -> None:
         super().__init__(**kwargs)
         self.view = view
-        self.visible = False
+        self.visible = True
         self.gap = 5
 
     def init(self) -> None:
@@ -47,7 +47,7 @@ class InfoButton(TextureButton):
 
 
 class IncrementButton(TextureButton):
-    def __init__(self, increment: int, view: "GameView", **kwargs) -> None:
+    def __init__(self, increment: float, view: "GameView", **kwargs) -> None:
         self.increment = increment
         self.view = view
         super().__init__(text = str(increment), **kwargs)
@@ -58,13 +58,24 @@ class IncrementButton(TextureButton):
 
 
 class AutoIncrementButton(TextureButton):
-    def __init__(self, auto_increment: int, view: "GameView", **kwargs) -> None:
+    def __init__(self, auto_increment: float, view: "GameView", **kwargs) -> None:
         self.auto_increment = auto_increment
+        self.upgrade_cost = self.auto_increment
+        # увеличение цены улучшения после очередного улучшения
+        self.upgrade_cost_coeff = 1.2
         self.view = view
-        super().__init__(text = str(auto_increment), **kwargs)
+        super().__init__(text = self.get_text(), **kwargs)
+
+    def get_text(self) -> str:
+        return f"{int(self.auto_increment)} ({int(self.upgrade_cost)})"
 
     def on_click(self, event: UIOnClickEvent) -> None:
-        self.view.auto_increment += self.auto_increment
+        if self.view.score >= self.upgrade_cost:
+            self.view.score -= self.upgrade_cost
+            self.upgrade_cost *= self.upgrade_cost_coeff
+            self.view.auto_increment += self.auto_increment
+
+            self.text = self.get_text()
 
 
 class GameView(View, CoreGameView):
@@ -72,12 +83,9 @@ class GameView(View, CoreGameView):
     displayed_score: str
     total_score: float
     displayed_total_score: str
-    auto_increment: int
+    auto_increment: float
     displayed_auto_increment: str
     default_increments = [1, 5, 10, 50]
-
-    # время в секундах с начала игры
-    time: float
 
     info_box: InfoBox
     info_button: InfoButton
@@ -89,7 +97,6 @@ class GameView(View, CoreGameView):
         self.displayed_total_score = self.get_displayed_total_score()
         self.auto_increment = 0
         self.displayed_auto_increment = self.get_displayed_auto_increment()
-        self.time = 0
 
     def prepare_increment_block(self) -> None:
         self.reset_info()
@@ -142,7 +149,7 @@ class GameView(View, CoreGameView):
         return f"Общий счет: {int(self.total_score)}"
 
     def get_displayed_auto_increment(self) -> str:
-        return f"Пассивный доход: {self.auto_increment}"
+        return f"Пассивный доход: {int(self.auto_increment)}"
 
     def on_draw(self) -> None:
         if (score := self.get_displayed_score()) != self.displayed_score:
@@ -158,7 +165,6 @@ class GameView(View, CoreGameView):
         super().on_draw()
 
     def on_update(self, delta_time: float) -> None:
-        self.time += delta_time
         delta_score = self.auto_increment * delta_time
         self.score += delta_score
         self.total_score += delta_score
