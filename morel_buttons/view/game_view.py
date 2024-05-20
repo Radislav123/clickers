@@ -1,81 +1,12 @@
-from arcade.gui import UIBoxLayout, UIOnClickEvent
+from arcade.gui import UIBoxLayout
 
-from core.service import Anchor, Color
-from core.texture import Texture
-from core.ui.button import TextureButton
-from core.ui.layout import BoxLayout
 from core.ui.text import Label
 from core.view import GameView as CoreGameView
+from morel_buttons.game_components.automation.logic import AutoClicker, AutoUpgrader
+from morel_buttons.game_components.automation.ui import AutomationBox, AutomationBoxButton
+from morel_buttons.game_components.increment import AutoIncrementButton, IncrementButton
+from morel_buttons.game_components.info import InfoBox, InfoButton
 from morel_buttons.view.view import View
-
-
-class InfoBox(BoxLayout):
-    total_score_label: Label
-    auto_increment_label: Label
-
-    def __init__(self, view: "GameView", **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.view = view
-        self.visible = True
-        self.gap = 5
-
-    def init(self) -> None:
-        label_kwargs = {
-            "color": Color.NORMAL,
-            "width": 200,
-            "height": 35
-        }
-        self.total_score_label = Label(text = self.view.displayed_total_score, **label_kwargs)
-        self.add(self.total_score_label)
-
-        self.auto_increment_label = Label(text = self.view.displayed_auto_increment, **label_kwargs)
-        self.add(self.auto_increment_label)
-
-        self.fit_content()
-        self.with_padding(all = self.gap)
-        self.with_background(texture = Texture.create_rounded_rectangle(self.size, 2))
-        self.move_to(self.view.info_button.right + 1, self.view.window.height - 1, Anchor.X.LEFT, Anchor.Y.TOP)
-
-
-class InfoButton(TextureButton):
-    def __init__(self, view: "GameView", **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.view = view
-
-    def on_click(self, event: UIOnClickEvent) -> None:
-        self.view.info_box.visible = not self.view.info_box.visible
-
-
-class IncrementButton(TextureButton):
-    def __init__(self, increment: float, view: "GameView", **kwargs) -> None:
-        self.increment = increment
-        self.view = view
-        super().__init__(text = str(increment), **kwargs)
-
-    def on_click(self, event: UIOnClickEvent) -> None:
-        self.view.score += self.increment
-        self.view.total_score += self.increment
-
-
-class AutoIncrementButton(TextureButton):
-    def __init__(self, auto_increment: float, view: "GameView", **kwargs) -> None:
-        self.auto_increment = auto_increment
-        self.upgrade_cost = self.auto_increment
-        # увеличение цены улучшения после очередного улучшения
-        self.upgrade_cost_coeff = 1.2
-        self.view = view
-        super().__init__(text = self.get_text(), **kwargs)
-
-    def get_text(self) -> str:
-        return f"{int(self.auto_increment)} ({int(self.upgrade_cost)})"
-
-    def on_click(self, event: UIOnClickEvent) -> None:
-        if self.view.score >= self.upgrade_cost:
-            self.view.score -= self.upgrade_cost
-            self.upgrade_cost *= self.upgrade_cost_coeff
-            self.view.auto_increment += self.auto_increment
-
-            self.text = self.get_text()
 
 
 class GameView(View, CoreGameView):
@@ -89,6 +20,10 @@ class GameView(View, CoreGameView):
 
     info_box: InfoBox
     info_button: InfoButton
+    automation_box: AutomationBox
+    automation_box_button: AutomationBoxButton
+
+    auto_clicks: bool
 
     def reset_info(self) -> None:
         self.score = 0
@@ -97,6 +32,8 @@ class GameView(View, CoreGameView):
         self.displayed_total_score = self.get_displayed_total_score()
         self.auto_increment = 0
         self.displayed_auto_increment = self.get_displayed_auto_increment()
+
+        self.auto_clicks = False
 
     def prepare_increment_block(self) -> None:
         self.reset_info()
@@ -130,17 +67,28 @@ class GameView(View, CoreGameView):
         self.info_box = InfoBox(self)
 
         self.info_button = InfoButton(self, text = self.get_displayed_score())
-        self.info_button.move_to(0, self.window.height, Anchor.X.LEFT, Anchor.Y.TOP)
         self.ui_manager.add(self.info_button)
 
         self.info_box.init()
         self.ui_manager.add(self.info_box)
+
+    def prepare_automation(self) -> None:
+        logics = [AutoClicker(), AutoUpgrader()]
+        self.automation_box = AutomationBox(logics, self)
+
+        self.automation_box_button = AutomationBoxButton(self)
+        self.ui_manager.add(self.automation_box_button)
+
+        self.automation_box.init()
+        self.automation_box_button.update_textures()
+        self.ui_manager.add(self.automation_box)
 
     def on_show_view(self) -> None:
         super().on_show_view()
 
         self.prepare_increment_block()
         self.prepare_info_block()
+        self.prepare_automation()
 
     def get_displayed_score(self) -> str:
         return f"Счет: {int(self.score)}"

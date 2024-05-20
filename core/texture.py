@@ -31,7 +31,7 @@ class Texture(ArcadeTexture):
             cls,
             size: tuple[int | float, int | float] = (100, 50),
             # в пикселях
-            border_thickness: int = 1,
+            border_thickness: int = 2,
             rounding_radius: int = None,
             color: Color = Color.NORMAL,
             border_color: Color = Color.BORDER
@@ -54,7 +54,7 @@ class Texture(ArcadeTexture):
         for x in range(size[0]):
             for y in range(size[1]):
                 if figure.belongs(x, y):
-                    alpha.putpixel((x, y), 255)
+                    alpha.putpixel((x, y), image.getpixel((x, y))[3])
         image.putalpha(alpha)
 
         # наложение границы

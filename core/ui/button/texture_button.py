@@ -46,10 +46,4 @@ class TextureButton(UITextureButton, MovableWidgetMixin):
         else:
             kwargs["texture"] = texture
 
-        super().__init__(
-            x = x,
-            y = y,
-            width = width,
-            height = height,
-            **kwargs
-        )
+        super().__init__(x = x, y = y, width = width, height = height, **kwargs)
